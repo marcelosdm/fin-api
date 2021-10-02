@@ -93,13 +93,32 @@ app.post("/withdraw", verifyIfExistsAccountCPF, (request, response) => {
 
 app.get("/statement/date", verifyIfExistsAccountCPF, (request, response) => {
   const { customer } = request;
-  const { date} = request.query;
+  const { date } = request.query;
 
-  const dateFormat = new Date(date + " 00:00")
+  const dateFormat = new Date(date + " 00:00");
 
-  const statementFound = customer.statement.filter(statement => statement.created_at.toDateString() === new Date(dateFormat).toDateString())
+  const statementFound = customer.statement.filter(
+    (statement) =>
+      statement.created_at.toDateString() ===
+      new Date(dateFormat).toDateString()
+  );
 
   return response.json(statementFound);
+});
+
+app.put("/account", verifyIfExistsAccountCPF, (request, response) => {
+  const { name } = request.body;
+  const { customer } = request;
+
+  customer.name = name;
+
+  return response.status(201).send();
+});
+
+app.get("/account", verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request;
+
+  return response.json(customer);
 });
 
 app.listen(3333);
